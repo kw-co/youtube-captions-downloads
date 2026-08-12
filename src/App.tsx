@@ -40,7 +40,12 @@ export default function App() {
   const loadLocalData = () => {
     const storedVideos = localStorage.getItem('yt_videos');
     if (storedVideos) {
-      try { setVideos(JSON.parse(storedVideos)); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(storedVideos);
+        // Deduplicate in case of existing corrupted data
+        const uniqueVideos = Array.from(new Map(parsed.map((v: YouTubeVideo) => [v.id, v])).values()) as YouTubeVideo[];
+        setVideos(uniqueVideos); 
+      } catch (e) {}
     }
     const storedDownloaded = localStorage.getItem('yt_downloaded_ids');
     if (storedDownloaded) {
@@ -49,8 +54,10 @@ export default function App() {
   };
 
   const saveVideos = (newVideos: YouTubeVideo[]) => {
-    setVideos(newVideos);
-    localStorage.setItem('yt_videos', JSON.stringify(newVideos));
+    // Deduplicate before saving
+    const uniqueVideos = Array.from(new Map(newVideos.map(v => [v.id, v])).values());
+    setVideos(uniqueVideos);
+    localStorage.setItem('yt_videos', JSON.stringify(uniqueVideos));
   };
 
   const saveDownloaded = (newIds: Set<string>) => {
@@ -398,8 +405,8 @@ export default function App() {
           </div>
 
           <div className="flex-1 overflow-y-auto">
-             {videos.map(video => (
-                <div key={video.id} className="grid grid-cols-12 gap-4 p-4 border-b border-[#111] items-center text-sm hover:bg-[#111]/50 transition-colors pr-6 text-right" onClick={() => !isProcessing && toggleSelection(video.id)}>
+             {videos.map((video, index) => (
+                <div key={`${video.id}-${index}`} className="grid grid-cols-12 gap-4 p-4 border-b border-[#111] items-center text-sm hover:bg-[#111]/50 transition-colors pr-6 text-right" onClick={() => !isProcessing && toggleSelection(video.id)}>
                    <div className="col-span-1 flex justify-center">
                       <input 
                         type="checkbox" 

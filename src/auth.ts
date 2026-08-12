@@ -1,12 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { initializeAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, browserLocalPersistence } from 'firebase/auth';
 import firebaseConfig from '../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-
-// Use local persistence so the user stays logged in across sessions
-setPersistence(auth, browserLocalPersistence).catch(console.error);
+export const auth = initializeAuth(app, {
+  persistence: browserLocalPersistence
+});
 
 const provider = new GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/youtube.readonly');
