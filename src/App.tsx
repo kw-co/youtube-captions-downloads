@@ -49,7 +49,7 @@ export default function App() {
     }
     const storedDownloaded = localStorage.getItem('yt_downloaded_ids');
     if (storedDownloaded) {
-      try { setDownloadedIds(new Set(JSON.parse(storedDownloaded))); } catch (e) {}
+      try { setDownloadedIds(new Set<string>(JSON.parse(storedDownloaded))); } catch (e) {}
     }
   };
 
@@ -113,7 +113,7 @@ export default function App() {
       
       const playlistId = await getUploadsPlaylistId(token);
       
-      const existingIds = new Set(videos.map(v => v.id));
+      const existingIds = new Set<string>(videos.map(v => v.id));
       setProgressText('جاري البحث عن فيديوهات جديدة...');
       
       const newVideos = await syncVideos(token, playlistId, existingIds, (count) => {
@@ -136,7 +136,7 @@ export default function App() {
   };
 
   const toggleSelection = (id: string) => {
-    const newSelection = new Set(selectedIds);
+    const newSelection = new Set<string>(selectedIds);
     if (newSelection.has(id)) {
       newSelection.delete(id);
     } else {
@@ -146,7 +146,7 @@ export default function App() {
   };
 
   const selectNextBatch = (size: number) => {
-    const newSelection = new Set(selectedIds);
+    const newSelection = new Set<string>(selectedIds);
     let added = 0;
     for (const video of videos) {
       if (!downloadedIds.has(video.id) && !newSelection.has(video.id)) {
@@ -189,7 +189,7 @@ export default function App() {
       let totalDownloaded = 0;
       let quotaExceeded = false;
       const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-      const newDownloadedIds = new Set(downloadedIds);
+      const newDownloadedIds = new Set<string>(downloadedIds);
 
       for (let i = 0; i < videosToProcess.length; i++) {
         if (quotaExceeded) break;
