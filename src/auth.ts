@@ -1,10 +1,19 @@
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, browserLocalPersistence } from 'firebase/auth';
+import { 
+  initializeAuth, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  onAuthStateChanged, 
+  User, 
+  browserLocalPersistence,
+  browserPopupRedirectResolver
+} from 'firebase/auth';
 import firebaseConfig from '../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
-  persistence: browserLocalPersistence
+  persistence: browserLocalPersistence,
+  popupRedirectResolver: browserPopupRedirectResolver
 });
 
 const provider = new GoogleAuthProvider();
